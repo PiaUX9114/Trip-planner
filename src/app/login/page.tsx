@@ -12,6 +12,7 @@ const messages: Record<string, string> = {
   'check-email': 'Check your inbox for the confirmation email, then return to sign in.',
   'confirm-error': 'This confirmation link is invalid or expired. Try signing up or signing in again.',
   'signed-out': 'You have signed out.',
+  'terms-required': 'Agree to the Terms of Service before creating an account.',
 };
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ notice?: string }> }) {
@@ -38,10 +39,14 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           <label className="block text-sm font-medium text-slate-700" htmlFor="password">Password</label>
           <input id="password" name="password" type="password" minLength={8} autoComplete="current-password" required
             className="-mt-2 block w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900" placeholder="At least 8 characters" />
+          <label className="flex items-start gap-3 text-xs leading-5 text-slate-600">
+            <input type="checkbox" name="terms_accept" value="yes" className="mt-1" />
+            <span>For account creation: I agree to the <Link href="/terms" className="text-blue-700 underline">Terms of Service</Link> and acknowledge the <Link href="/privacy" className="text-blue-700 underline">Privacy Policy</Link>.</span>
+          </label>
           <button disabled={!configured} className="w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-40" type="submit">Sign in</button>
           <button disabled={!configured} formAction={signUpAction} className="w-full rounded-xl border border-slate-300 px-4 py-3 font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-40" type="submit">Create account</button>
         </form>
-        <p className="mt-4 text-xs leading-5 text-slate-500">For account creation, use at least eight characters. If email confirmation is enabled, follow the link delivered to your inbox.</p>
+        <p className="mt-4 text-xs leading-5 text-slate-500">Use at least eight characters. If email confirmation is enabled, follow the email link. The agreement checkbox is required for new accounts, not for signing in.</p>
       </div>
     </main>
   );

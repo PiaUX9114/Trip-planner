@@ -27,14 +27,13 @@ export async function signInAction(formData: FormData) {
 
 export async function signUpAction(formData: FormData) {
   if (!supabaseConfigured()) redirect('/login?notice=setup');
+  if (formData.get('terms_accept') !== 'yes') redirect('/login?notice=terms-required');
   const { email, password } = credentials(formData);
   if (!email.includes('@') || password.length < 8) redirect('/login?notice=invalid');
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({ email, password });
-  if (error) {
-  redirect('/login?notice=signup-error');
-}
+  if (error) redirect('/login?notice=signup-error');
 
   if (!data.session) redirect('/login?notice=check-email');
   revalidatePath('/', 'layout');

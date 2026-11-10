@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import Link from 'next/link';
+import { SUPPORT_EMAIL } from '@/lib/legal/site-info';
 
 export const metadata: Metadata = {
   title: 'Trip Planner | Plan Your Trip',
@@ -22,7 +24,16 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <footer className="border-t border-slate-200 bg-white px-5 py-6 text-center text-sm text-slate-600">
+          <nav aria-label="Legal and support" className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
+            <Link href="/terms" className="hover:underline">Terms of Service</Link>
+            <a href={`mailto:${SUPPORT_EMAIL}`} className="hover:underline">Contact support</a>
+          </nav>
+        </footer>
+      </body>
     </html>
   );
 }

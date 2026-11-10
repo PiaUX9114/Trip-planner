@@ -57,8 +57,9 @@ test('M2 stop saving and day ordering remain available in the M3 page', () => {
   assert.match(page, /mapFieldsError/);
 });
 
-test('Map uses real OpenStreetMap raster tiles and visible attribution', () => {
-  assert.match(canvas, /https:\/\/tile\.openstreetmap\.org\/\{z\}\/\{x\}\/\{y\}\.png/);
+test('Map uses authenticated Geoapify tile proxy with attribution', () => {
+  assert.match(canvas, /\/api\/tiles\/\{z\}\/\{x\}\/\{y\}/);
+  assert.match(canvas, /Geoapify/);
   assert.match(canvas, /OpenStreetMap/);
   assert.match(canvas, /divIcon/);
   assert.match(canvas, /number = stops\.indexOf\(stop\) \+ 1/);
@@ -77,8 +78,9 @@ test('Authenticated geocoding limits query length, checks RLS trip and rate', ()
   assert.match(search, /auth\.getClaims\(\)/);
   assert.match(search, /from\('trips'\)/);
   assert.match(search, /query\.length < 3/);
-  assert.match(search, /allowPublicRequest\('nominatim'\)/);
-  assert.match(search, /https:\/\/nominatim\.openstreetmap\.org\/search/);
+  assert.match(search, /consumeGeoapifyQuota\(supabase, tripId, 'search'\)/);
+  assert.match(search, /searchGeoapify\(query\)/);
+  assert.doesNotMatch(search, /nominatim\.openstreetmap\.org/);
 });
 
 test('Routing reads saved stops from Supabase rather than trusting client coordinates', () => {
@@ -86,8 +88,9 @@ test('Routing reads saved stops from Supabase rather than trusting client coordi
   assert.match(route, /from\('trips'\)/);
   assert.match(route, /\.order\('sort_order'/);
   assert.match(route, /stops\.length > 12/);
-  assert.match(route, /allowPublicRequest\('osrm'\)/);
-  assert.match(route, /router\.project-osrm\.org/);
+  assert.match(route, /consumeGeoapifyQuota\(supabase, tripId, 'map_route'\)/);
+  assert.match(route, /routeGeoapify\(stops/);
+  assert.doesNotMatch(route, /router\.project-osrm\.org/);
 });
 
 test('Map pin action uses existing auth and role-protected RPC', () => {

@@ -18,16 +18,17 @@ test('M7 source, CI, release docs and runner files are root-relative', () => {
   ]) assert.ok(existsSync(join(root, file)), file);
 });
 
-test('all three development-only public map API endpoints fail closed on production', () => {
-  assert.match(read('src/lib/map/release-policy.ts'), /process\.env\.NODE_ENV === 'production'/);
+test('all three map endpoints require Geoapify configuration and shared quotas', () => {
   for (const path of [
     'src/app/api/maps/search/route.ts',
     'src/app/api/maps/route/route.ts',
     'src/app/api/navigation/route/route.ts',
   ]) {
     const content = read(path);
-    assert.match(content, /publicDemoDisabled\(\)/, path);
+    assert.match(content, /geoapifyConfigured\(\)/, path);
+    assert.match(content, /consumeGeoapifyQuota\(/, path);
     assert.match(content, /status: 503/, path);
+    assert.doesNotMatch(content, /router\.project-osrm\.org|nominatim\.openstreetmap\.org/, path);
   }
 });
 
@@ -45,10 +46,10 @@ test('M7 health probe returns no Supabase configuration or keys', () => {
   assert.doesNotMatch(source, /SUPABASE_URL|PUBLISHABLE_KEY|service_role|sb_secret_/);
 });
 
-test('preflight has a strict production mode and checks demo providers', () => {
+test('preflight has a strict production mode and checks production provider configuration', () => {
   const source = read('scripts/m7-preflight.mjs');
   assert.match(source, /--production/);
-  assert.match(source, /nominatim\\\.openstreetmap/);
+  assert.match(source, /GEOAPIFY_API_KEY/);
   assert.match(source, /process\.exitCode = 1/);
   assert.doesNotMatch(source, /fetch\(/);
 });

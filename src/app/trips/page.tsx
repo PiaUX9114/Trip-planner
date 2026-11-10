@@ -23,7 +23,10 @@ export default async function TripsPage() {
     <main className="mx-auto min-h-screen max-w-6xl px-5 py-8 sm:py-12">
       <header className="flex items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <Link href="/" className="text-xl font-bold tracking-tight text-slate-900">Trip <span className="text-blue-600">Planner</span></Link>
-        <form action={signOutAction}><button type="submit" className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium hover:bg-white">Sign out</button></form>
+        <div className="flex items-center gap-3">
+          <Link href="/account" className="text-sm font-semibold text-blue-700 hover:underline">Account</Link>
+          <form action={signOutAction}><button type="submit" className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium hover:bg-white">Sign out</button></form>
+        </div>
       </header>
       <div className="mt-10 flex flex-wrap items-end justify-between gap-4">
         <div><p className="text-xs font-bold uppercase tracking-widest text-blue-600">Your workspace</p><h1 className="mt-2 text-3xl font-bold text-slate-900">My trips</h1><p className="mt-2 text-slate-600">Plan together. Travel your way.</p></div>

@@ -33,17 +33,16 @@ test('Navigation is only available to signed-in trip members via RLS', () => {
   assert.doesNotMatch(api, /service_role|sb_secret_/);
 });
 
-test('Driving directions are user-requested and limited for public OSRM', () => {
+test('Driving directions are user-requested and quota-limited by Geoapify', () => {
   const api = read(files[1]);
   const panel = read(files[2]);
-  assert.match(api, /allowPublicRequest\('osrm'\)/);
-  assert.match(api, /steps=true/);
-  assert.match(api, /overview=full/);
+  assert.match(api, /consumeGeoapifyQuota\(supabase, tripId, 'navigation'\)/);
+  assert.match(api, /routeGeoapify\(/);
   assert.match(api, /stops\.length > 12/);
-  assert.match(api, /'Cache-Control': 'no-store'/);
+  assert.match(api, /noStore/);
   assert.match(panel, /onClick=\{calculateRoute\}/);
   assert.match(panel, /method: 'POST'/);
-  assert.match(panel, /public OSRM demo/);
+  assert.match(panel, /Geoapify routing service/);
   assert.doesNotMatch(panel, /setInterval\(calculateRoute|setInterval\(.*fetch\(/);
 });
 
