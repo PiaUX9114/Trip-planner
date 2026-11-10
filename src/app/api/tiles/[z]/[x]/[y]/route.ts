@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { geoapifyConfigured } from '@/lib/map/geoapify';
 import { supabaseConfigured } from '@/lib/supabase/config';
+import { createQuotaAdminClient } from '@/lib/supabase/admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -29,8 +30,13 @@ export async function GET(_request: Request, { params }: TileParams) {
     return new Response('Sign in to view the map.', { status: 401, headers: noStore });
   }
 
-  // Fail closed if the shared PostgreSQL quota migration is absent.
-  const { data: allowed, error: quotaError } = await supabase.rpc('take_geoapify_tile_quota');
+  // getClaims() above validated the session; never use an ID from URL parameters.
+  // Only the backend's secret-key client can invoke the new quota RPC.
+  const admin = createQuotaAdminClient();
+  if (!admin) return new Response('Tile quota unavailable.', { status: 503, headers: noStore });
+  const { data: allowed, error: quotaError } = await admin.rpc('take_geoapify_tile_quota_server', {
+    p_user_id: auth.claims.sub,
+  });
   if (quotaError || typeof allowed !== 'boolean') {
     return new Response('Tile quota unavailable.', { status: 503, headers: noStore });
   }
