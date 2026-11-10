@@ -1,0 +1,13 @@
+.trip-stop-marker {
+  background: #2563eb;
+  color: #fff;
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 4px;
+  box-shadow: 0 2px 8px #1e293b70;
+  font: bold 13px/26px Arial, sans-serif;
+  text-align: center;
+  transform: rotate(-45deg);
+}
+.trip-stop-marker span { display: block; transform: rotate(45deg); }
+.trip-stop-marker.is-selected { background: #0f766e; border-color: #fef08a; }
+.leaflet-container { z-index: 0; }

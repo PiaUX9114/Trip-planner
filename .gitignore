@@ -1,0 +1,25 @@
+# Dependency, framework, and build outputs
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Local credentials. NEVER commit real environment files.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local machine artifacts
+.DS_Store
+Thumbs.db
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local milestone archives are not source files.
+trip-planner-m*.zip
